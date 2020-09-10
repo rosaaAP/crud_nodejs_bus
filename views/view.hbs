@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CRUD Jadwal Bus dengan Node.js</title>
+  <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+  <div class="container">
+    <h2>Jadwal Operasional Bus</h2>
+		<button class="btn btn-success" data-toggle="modal" data-target="#myModalAdd">Tambah Data Bus</button><hr>
+    <table class="table table-striped" id="mytable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nama Bus</th>
+          <th>Foto</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+         {{#each results}}
+        <tr>
+          <td>{{ id_bus }}</td>
+          <td>{{ nama_bus }}</td>
+          <td>{{ foto_bus }}</td>
+          <td><font color="red">{{ status }}</font></td>
+          <td>
+            <a href="javascript:void(0);" class="btn btn-sm btn-info edit" data-id="{{ id_bus }}" data-nama_bus="{{ nama_bus }}" data-foto_bus="{{ foto_bus }}">Edit</a>
+            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" data-id="{{ id_bus }}">Hapus</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+	<!-- Add New Product Modal-->
+	  <form action="/save" method="post">
+        <div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Silahkan tambah data bus</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body">
+               <div class="form-group">
+                   <input type="text" name="nama_bus" class="form-control" placeholder="Nama bus" required>
+               </div>
+
+               <div class="form-group">
+                   <input type="text" name="foto_bus" class="form-control" placeholder="Foto bus" required>
+               </div>
+             <div class="form-group">
+              <select name="status" class="form-control" id="status" required >
+        <option>
+        - Pilih Status  -
+        </option>
+        <option >Telah Berangkat</option>
+        <option>Batal Berangkat</option>
+        <option>Tunda</option>
+            </select> 
+       </div>
+            </div>
+             <div class="modal-footer">
+               <!--button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button-->
+               <button type="submit" class="btn btn-primary">Simpan</button>
+             </div>
+           </div>
+         </div>
+        </div>
+	 </form>
+
+	 <!-- Edit Product Modal-->
+   <form action="/update" method="post">
+       <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Silahkan edit data bus</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                  <input type="text" name="nama_bus" class="form-control nama_bus" placeholder="Nama bus" required>
+              </div>
+
+              <div class="form-group">
+                  <input type="text" name="foto_bus" class="form-control foto_bus" placeholder="Foto bus" required>
+              </div>
+              <div class="form-group">
+              <select name="status" class="form-control" id="status" required >
+        <option>
+        - Pilih Status  -
+        </option>
+        <option >Telah Berangkat</option>
+        <option>Batal Berangkat</option>
+        <option>Tunda</option>
+            </select> 
+       </div>
+            </div>
+            <div class="modal-footer">
+              <input type="hidden" name="id" class="id_bus">
+              <!--button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button-->
+              <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+          </div>
+        </div>
+       </div>
+  </form>
+
+	 <!-- Delete Product Modal-->
+ 	  <form id="add-row-form" action="/delete" method="post">
+ 	     <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 	        <div class="modal-dialog">
+ 	           <div class="modal-content">
+ 	               <div class="modal-header">
+									 	<h5 class="modal-title" id="myModalLabel">Hapus data bus</h5>
+ 	                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+ 	               </div>
+ 	               <div class="modal-body">
+												 <strong>Anda yakin ingin menghapusnya?</strong>
+ 	               </div>
+ 	               <div class="modal-footer">
+									 		<input type="hidden" name="id_bus" class="form-control id_bus2" required>
+ 	                   	<!--button type="button" class="btn btn-default" data-dismiss="modal">Close</button-->
+ 	                  	<button type="submit" class="btn btn-success">Hapus</button>
+ 	               </div>
+ 	      			</div>
+ 	        </div>
+ 	     </div>
+ 	 </form>
+
+<script src="/assets/js/jquery-3.3.1.js"></script>
+<script src="/assets/js/bootstrap.js"></script>
+<script>
+    $(document).ready(function(){
+			//showing data to modal for edit record
+      $('#mytable').on('click','.edit',function(){
+        var id_bus = $(this).data('id');
+        var nama_bus = $(this).data('nama_bus');
+        var foto_bus = $(this).data('foto_bus');
+        var status = $(this).data('status');
+        $('#EditModal').modal('show');
+        $('.nama_bus').val(nama_bus);
+        $('.foto_bus').val(foto_bus);
+        $('.status').val(status);
+        $('.id_bus').val(id_bus);
+      });
+			//showing modal for delete record
+			$('#mytable').on('click','.delete',function(){
+        var id_bus = $(this).data('id');
+        $('#DeleteModal').modal('show');
+        $('.id_bus2').val(id_bus);
+      });
+
+    });
+</script>
+</body>
+</html>
